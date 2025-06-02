@@ -1,0 +1,83 @@
+import csv
+
+# 🎯 Hardcoded stock prices
+STOCK_PRICES = {
+    "AAPL": 180,
+    "TSLA": 250,
+    "GOOGL": 140,
+    "MSFT": 310,
+    "AMZN": 125
+}
+
+def display_available_stocks():
+    print("\n💹 Available Stocks & Prices:")
+    print("-" * 30)
+    for symbol, price in STOCK_PRICES.items():
+        print(f"{symbol:<6} ➤ ${price}")
+    print("-" * 30)
+
+def get_user_portfolio():
+    portfolio = {}
+    print("\n📥 Enter your stock holdings:")
+    print("(Type 'done' to finish)\n")
+
+    while True:
+        stock = input("🔹 Stock Symbol: ").upper()
+        if stock == "DONE":
+            break
+        if stock not in STOCK_PRICES:
+            print("❌ Invalid symbol! Please choose from the available list.")
+            continue
+
+        try:
+            qty = int(input(f"🔸 Quantity of {stock}: "))
+            if qty < 0:
+                print("❌ Quantity cannot be negative.\n")
+                continue
+        except ValueError:
+            print("❌ Please enter a valid integer.\n")
+            continue
+
+        portfolio[stock] = portfolio.get(stock, 0) + qty
+        print(f"✅ Added {qty} shares of {stock}.\n")
+
+    return portfolio
+
+def calculate_total_investment(portfolio):
+    print("\n📊 Your Portfolio Summary:")
+    print("-" * 45)
+    total = 0
+    for stock, qty in portfolio.items():
+        price = STOCK_PRICES[stock]
+        value = price * qty
+        total += value
+        print(f"{stock:<6}: {qty} shares x ${price} = ${value}")
+    print("-" * 45)
+    print(f"💰 Total Investment: ${total}")
+    return total
+
+def save_to_csv(portfolio, total, filename="portfolio.csv"):
+    with open(filename, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(["Stock", "Quantity", "Price", "Total"])
+        for stock, qty in portfolio.items():
+            price = STOCK_PRICES[stock]
+            writer.writerow([stock, qty, price, qty * price])
+        writer.writerow(["", "", "Total", total])
+    print(f"📁 Portfolio saved to '{filename}'.")
+
+# 🏁 Main Program Flow
+print("📈 Welcome to the Stock Portfolio Tracker")
+
+display_available_stocks()
+portfolio_data = get_user_portfolio()
+
+if portfolio_data:
+    total_value = calculate_total_investment(portfolio_data)
+    save_choice = input("\n💾 Save this summary to CSV? (yes/no): ").lower()
+    if save_choice == "yes":
+        save_to_csv(portfolio_data, total_value)
+else:
+    print("⚠️ No stocks entered. Exiting program.")
+
+print("\n✅ Thank you for using the tracker. Goodbye!")
