@@ -1,5 +1,7 @@
 # CodeAlpha_Stock-Portfolio-Tracker
 
+"COMPANY": CODEALPHA
+
 "NAME": M YOSHIDHA
 
 "INTERN ID": CA/JU1/8787
